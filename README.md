@@ -23,3 +23,10 @@ python -m http.server 8000
 ```
 
 Open [localhost:8000](http://localhost:8000). The site uses HTML, CSS, JavaScript, and Three.js, and is hosted on GitHub Pages. See [CREDITS.md](CREDITS.md) for asset and library credits.
+
+
+## Copyright
+
+© 2026 Hiral Choksi. All rights reserved for the original code, design, and content in Hiral’s Lab. Please obtain permission before reusing or redistributing my original work, except where permitted by law or GitHub’s Terms of Service.
+
+Third-party libraries and assets remain subject to their respective licenses. See [CREDITS.md](CREDITS.md) for attribution.
