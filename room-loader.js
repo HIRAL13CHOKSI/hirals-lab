@@ -4,7 +4,7 @@ const status = document.getElementById('render-status');
 async function openRoom() {
   status.textContent = 'OPENING THE LAB';
   try {
-    await import('./room.js?v=welcome-fit');
+    await import('./room.js?v=straight-skyline');
   } catch (error) {
     console.warn('Unable to open the 3D lab.', error);
   }

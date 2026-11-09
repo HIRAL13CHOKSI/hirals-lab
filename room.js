@@ -215,6 +215,7 @@ function skylinePanel(w,h,x,y,z,rotation=0){const panel=mesh(new THREE.PlaneGeom
 // Front windows sit beside the door, not in a different part of the room.
 // Reference entrance: glass windows flank the centered original door.
 const frontGlazing=new THREE.Group();room.add(frontGlazing);
+const sillHeight=.3, sillHalfWidth=9.15, frontSillZ=12.48, rearSillZ=25;
 // Both right-hand surfaces share a skyline image and meet at x=13, z=10.
 const riverfrontCornerU=.73;
 function cropRiverfront(panel,startU,endU){
@@ -229,21 +230,23 @@ for(const side of [-1,1]){
     ? skylinePanel(5.4,6,-6.6,3.1,10.9)
     : skylinePanel(Math.hypot(9.1,.9),10,8.45,4,10.45,Math.atan2(.9,9.1));
   if(side>0)cropRiverfront(panel,.45,riverfrontCornerU);
-  frontGlazing.add(panel);box(5.1,5.65,.035,glassMat,frontGlazing,side*6.6,3.1,12.35);for(const dx of [-2.55,0,2.55])box(.065,5.9,.10,m.trim,frontGlazing,side*6.6+dx,3.1,12.4);box(5.1,.055,.10,m.trim,frontGlazing,side*6.6,1.05,12.4);box(5.1,.025,.03,amber,frontGlazing,side*6.6,.3,12.48);}
+  frontGlazing.add(panel);box(5.1,5.65,.035,glassMat,frontGlazing,side*6.6,3.1,12.35);for(const dx of [-2.55,0,2.55])box(.065,5.9,.10,m.trim,frontGlazing,side*6.6+dx,3.1,12.4);box(5.1,.055,.10,m.trim,frontGlazing,side*6.6,1.05,12.4);box(5.1,.025,.03,amber,frontGlazing,side*6.6,sillHeight,frontSillZ);}
 // Keep the entrance skyline separate from the wide My Goals composition.
 const terraceSkyline=[];
 for(const side of [-1,1]){
   const panel=skylinePanel(18,10,side*13,4,19,side<0?Math.PI/2:-Math.PI/2);
   if(side>0)cropRiverfront(panel,riverfrontCornerU,1);
   terraceSkyline.push(panel);
-  box(.035,5.5,12,glassMat,room,side*9.3,2.8,18);for(let z=13;z<=23;z+=3)box(.07,5.6,.07,m.trim,room,side*9.3,2.8,z);box(.055,.04,12,amber,room,side*9.25,.2,18);}
+  box(.035,5.5,12,glassMat,room,side*9.3,2.8,18);for(let z=13;z<=23;z+=3)box(.07,5.6,.07,m.trim,room,side*9.3,2.8,z);box(.03,.025,rearSillZ-frontSillZ,amber,room,side*sillHalfWidth,sillHeight,(frontSillZ+rearSillZ)/2);}
 terraceSkyline.push(skylinePanel(28,10,0,4,29,Math.PI));
 const goalsSkyline=skylinePanel(42,15,0,4,29,Math.PI);
 goalsSkyline.visible=false;
-box(18,5.5,.035,glassMat,room,0,2.8,25);for(let x=-9;x<=9;x+=3)box(.07,5.6,.07,m.trim,room,x,2.8,25);box(18,.04,.07,amber,room,0,.2,25);
+box(18,5.5,.035,glassMat,room,0,2.8,25);for(let x=-9;x<=9;x+=3)box(.07,5.6,.07,m.trim,room,x,2.8,25);box(2*sillHalfWidth,.025,.03,amber,room,0,sillHeight,rearSillZ);
 // Full right-hand glazing gives visitors an actual city view inside the lab.
 skylinePanel(30,10,14,4,-.5,-Math.PI/2);
-for(let z=-10;z<=10;z+=2){box(.035,5.7,1.85,glassMat,room,8.77,3,z);box(.12,5.9,.07,m.trim,room,8.65,3,z-1);box(.04,.025,1.85,amber,room,8.6,5.82,z);box(.04,.025,1.85,amber,room,8.6,.25,z);box(.08,.08,1.9,m.trim,room,8.65,1.15,z);}
+const interiorWindowAccents=new THREE.Group();room.add(interiorWindowAccents);
+interiorWindowAccents.visible=false;
+for(let z=-10;z<=10;z+=2){box(.035,5.7,1.85,glassMat,room,8.77,3,z);box(.12,5.9,.07,m.trim,room,8.65,3,z-1);box(.04,.025,1.85,amber,interiorWindowAccents,8.6,5.82,z);box(.04,.025,1.85,amber,room,8.6,.25,z);box(.08,.08,1.9,m.trim,room,8.65,1.15,z);}
 // Controlled warm architectural accents replace scattered decorative neon.
 for(let z=-10;z<=10;z+=4){box(.12,2.4,.09,amber,room,-8.7,3.2,z);box(.28,2.6,.16,m.black,room,-8.8,3.2,z);const lamp=new THREE.PointLight('#ffd399',6,6,2);lamp.position.set(-7.8,3,z);scene.add(lamp);}
 for(const x of [-3.52,3.52]){box(.07,5.9,.15,amber,room,x,2.95,12.55);}
@@ -440,7 +443,7 @@ const stops=[0,.12,.26,.40,.54,.68,.82,1];
 const positions=[new THREE.Vector3(0,2.8,21),new THREE.Vector3(-1.2,2.4,8),new THREE.Vector3(-2.2,2.35,3.25),new THREE.Vector3(1.5,2.4,-.7),new THREE.Vector3(.15,2.7,-5.3),new THREE.Vector3(-1.8,2.4,-5),new THREE.Vector3(1.8,2.4,-4.8),new THREE.Vector3(0,3.15,-7.6)];
 const targets=[new THREE.Vector3(0,2.8,12),new THREE.Vector3(3,2.4,2.5),new THREE.Vector3(-6.2,1.9,1),new THREE.Vector3(6,2.1,-4),new THREE.Vector3(0,2.5,-9.5),new THREE.Vector3(-5.7,2.05,-7.8),new THREE.Vector3(5.7,1.65,-7.8),new THREE.Vector3(.45,3.65,-12)];
 const chapters=[
-{eyebrow:'THE MUSEUM OF UNFINISHED QUESTIONS',title:'Hi, I’m Hiral Choksi.',description:'At UConn CIRCA, I built a computer vision pipeline to estimate flood depth from street photos and validated it in the field.',location:'00 / HELLO, I’M HIRAL',next:'Let’s go inside →'},
+{eyebrow:'THE MUSEUM OF UNFINISHED QUESTIONS',title:'Hi, I’m Hiral Choksi.',description:'I’m a graduate student in Computer Science & Engineering at UConn. I build machine learning systems and test them against real-world data.',location:'00 / HELLO, I’M HIRAL',next:'Let’s go inside →'},
 {eyebrow:'01 / YOUR LAB GUIDE',title:'Hi, I’m her robot.<br><em>Let me show you around.</em>',description:'Hiral built me to answer questions. She keeps finding new ones. Come explore what she’s been building—choose Next or a project from the menu.',location:'01 / MEET YOUR GUIDE',next:'Follow my robot →'},
 {eyebrow:'02 / CIRCA · COMPUTER VISION',title:'Flood Depth<br><em>Estimation</em>',description:'See how a reference object and the waterline in a street photo can help estimate flood depth.',location:'02 / RISING WATERS',project:'flood',next:'Next: ClariHealth →'},
 {eyebrow:'03 / CLARIHEALTH · ACCESSIBILITY',title:'ClariHealth<br><em>AI</em>',description:'A patient-portal prototype exploring conversational guidance and explicit accessibility preferences, with a proposed RAG/FHIR architecture.',location:'03 / CLARIHEALTH',project:'health',next:'Next: Lumera →'},
@@ -458,8 +461,13 @@ const pedestalFront=new THREE.Vector3();
 function readProgress(){const r=journey.getBoundingClientRect();active=r.bottom>0&&r.top<innerHeight;document.body.classList.toggle('room-journey-active',active&&!recruiter);}
 window.addEventListener('scroll',readProgress,{passive:true});
 function jump(index){targetStation=index;progress=stops[index];desiredYaw=0;desiredPitch=0;setChapter(index);journey.scrollIntoView({behavior:'instant',block:'start'});}
-function setChapter(index){if(current===index)return;current=index;boundaryStarted=time;portalStarted=time;readmeStarted=paused ? time - 3 : time;floodStarted=null;floodStatus.textContent='';$('#flood-demo-trigger').hidden=index!==2;const c=chapters[index];$('#chapter-eyebrow').textContent=c.eyebrow;$('#chapter-title').innerHTML=c.title;$('#chapter-description').textContent=c.description;$('#room-location').textContent=c.location;$('#enter-lab').hidden=true;$('#room-exhibit').hidden=!c.project;$('#room-experiment').hidden=index!==6;$('#room-scroll-hint').hidden=index===7;$('#flood-controls').hidden=index!==2;$('#previous-room').disabled=index===0;frame.classList.toggle('room-chapter-project',index>1);frame.classList.toggle('welcome-active',index===0);document.querySelectorAll('[data-room-stop]').forEach((b,i)=>{b.classList.toggle('current',i===index);b.setAttribute('aria-pressed',String(i===index));});$('#next-room').textContent=c.next;$('#next-room').setAttribute('aria-label',c.next);$('#story-next').textContent=c.next;$('#story-next').hidden=true;$('#welcome-specialties').hidden=index!==0;$('.welcome-actions').hidden=index!==0;$('#room-caption').scrollTop=0;$('#open-goals').hidden=index!==0;if(index===0)$('#open-goals').textContent='My goals ↗';$('#door-enter').hidden=index!==0;$('.story-author b').textContent=index===1?'Your lab guide':'Hiral Choksi';$('.story-author small').textContent=index===1?'BUILT BY HIRAL · YOUR MUSEUM GUIDE':'DATA SCIENCE · MACHINE LEARNING · AI';$('.creator-mark').textContent=index===1?'✳':'HC';window.dispatchEvent(new CustomEvent('lab-chapter',{detail:index}));}
+function setChapter(index){if(current===index)return;current=index;interiorWindowAccents.visible=index!==0;boundaryStarted=time;portalStarted=time;readmeStarted=paused ? time - 3 : time;floodStarted=null;floodStatus.textContent='';$('#flood-demo-trigger').hidden=index!==2;const c=chapters[index];$('#chapter-eyebrow').textContent=c.eyebrow;$('#chapter-title').innerHTML=c.title;$('#chapter-description').textContent=c.description;$('#room-location').textContent=c.location;$('#enter-lab').hidden=true;$('#room-exhibit').hidden=!c.project;$('#room-experiment').hidden=index!==6;$('#room-scroll-hint').hidden=index===7;$('#flood-controls').hidden=index!==2;$('#previous-room').disabled=index===0;frame.classList.toggle('room-chapter-project',index>1);frame.classList.toggle('welcome-active',index===0);document.querySelectorAll('[data-room-stop]').forEach((b,i)=>{b.classList.toggle('current',i===index);b.setAttribute('aria-pressed',String(i===index));});$('#next-room').textContent=c.next;$('#next-room').setAttribute('aria-label',c.next);$('#story-next').textContent=c.next;$('#story-next').hidden=true;$('#welcome-specialties').hidden=index!==0;$('.welcome-actions').hidden=index!==0;$('#room-caption').scrollTop=0;$('#open-goals').hidden=index!==0;if(index===0)$('#open-goals').textContent='My goals ↗';$('#door-enter').hidden=index!==0;$('.story-author b').textContent=index===1?'Your lab guide':'Hiral Choksi';$('.story-author small').textContent=index===1?'BUILT BY HIRAL · YOUR MUSEUM GUIDE':'DATA SCIENCE · MACHINE LEARNING · AI';$('.creator-mark').textContent=index===1?'✳':'HC';window.dispatchEvent(new CustomEvent('lab-chapter',{detail:index}));}
 document.querySelectorAll('#room-frame button').forEach(button=>button.addEventListener('pointerdown',event=>{event.preventDefault();button.focus({preventScroll:true});}));
+const returnFromGoals=()=>window.dispatchEvent(new Event('lab-goals-toggle'));
+$('.goals-return')?.addEventListener('click',returnFromGoals);
+window.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&frame.classList.contains('goals-view')&&!document.querySelector('dialog[open]'))returnFromGoals();
+});
 window.addEventListener('lab-goals-toggle',()=>{if(current!==0)jump(0);desiredYaw=Math.abs(desiredYaw)>Math.PI/2?0:Math.PI;desiredPitch=0;journey.scrollIntoView({behavior:'instant',block:'start'});});$('#enter-lab').onclick=()=>jump(1);$('#door-enter').onclick=()=>jump(1);let swipeOrigin=null;frame.addEventListener('pointerdown',e=>{if(current===0&&!e.target.closest('.room-caption,.room-controls,.room-map'))swipeOrigin={x:e.clientX,y:e.clientY};});frame.addEventListener('pointerup',e=>{if(current===0&&swipeOrigin&&Math.abs(e.clientX-swipeOrigin.x)>55&&Math.abs(e.clientX-swipeOrigin.x)>Math.abs(e.clientY-swipeOrigin.y)*1.3){drag=false;dragMoved=true;jump(1);}swipeOrigin=null;});frame.addEventListener('pointercancel',()=>swipeOrigin=null);let horizontalGesture=0;frame.addEventListener('wheel',e=>{if(current!==0||Math.abs(e.deltaX)<=Math.abs(e.deltaY)||Math.abs(e.deltaX)<2)return;e.preventDefault();horizontalGesture+=Math.abs(e.deltaX);if(horizontalGesture>65){horizontalGesture=0;jump(1);}},{passive:false});const advance=()=>current===7?$('#about').scrollIntoView({behavior:paused?'instant':'smooth'}):jump(Math.min(current+1,7));$('#next-room').onclick=advance;$('#story-next').onclick=advance;$('#previous-room').onclick=()=>jump(Math.max(0,current-1));$('#room-experiment').onclick=()=>window.dispatchEvent(new Event('open-boundary-experiment'));
 const runFloodDemo = $('#flood-demo-trigger');
 runFloodDemo.onclick = () => { floodStarted = paused || reduced.matches ? time - 3 : time; };
@@ -469,7 +477,7 @@ document.querySelectorAll('[data-look]').forEach(b=>b.onclick=()=>{const d=b.dat
 window.addEventListener('keydown',e=>{if(!active||e.target===canvas||e.target.closest('input,select,textarea,dialog'))return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();document.querySelector('[data-look="'+(e.key==='ArrowLeft'?'left':'right')+'"]').click();}});function pointerCoords(e){const r=canvas.getBoundingClientRect();pointer.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);}
 canvas.addEventListener('pointerdown',e=>{drag=true;dragMoved=false;lastX=e.clientX;lastY=e.clientY;pointerStartY=e.clientY;pointerStartX=e.clientX;});
 canvas.addEventListener('pointermove',e=>{pointerCoords(e);if(drag){if(current===0)return;const dx=e.clientX-lastX,dy=e.clientY-lastY;if(Math.abs(dx)+Math.abs(dy)>3)dragMoved=true;desiredYaw=desiredYaw-dx*.004;if(e.pointerType==='mouse')desiredPitch=THREE.MathUtils.clamp(desiredPitch+dy*.003,-.8,.8);lastX=e.clientX;lastY=e.clientY;}else{raycaster.setFromCamera(pointer,camera);const h=raycaster.intersectObjects(pickables)[0];hover=h?h.object.userData.exhibit:-1;canvas.style.cursor=h?'pointer':'grab';}});
-canvas.addEventListener('pointerup',e=>{if(current===0&&Math.abs(e.clientX-pointerStartX)>55&&Math.abs(e.clientX-pointerStartX)>Math.abs(e.clientY-pointerStartY)*1.3){drag=false;dragMoved=true;jump(1);return;}if(!dragMoved&&Math.abs(e.clientY-pointerStartY)<8){pointerCoords(e);raycaster.setFromCamera(pointer,camera);const h=raycaster.intersectObjects(pickables)[0];if(h){const id=h.object.userData.exhibit;if(id==='guide')$('#guide-toggle').click();else window.showPortfolioProject(id,canvas);}}drag=false;});canvas.addEventListener('pointerleave',()=>{drag=false;hover=-1;});canvas.addEventListener('pointercancel',()=>drag=false);
+canvas.addEventListener('pointerup',e=>{if(current===0&&Math.abs(e.clientX-pointerStartX)>55&&Math.abs(e.clientX-pointerStartX)>Math.abs(e.clientY-pointerStartY)*1.3){drag=false;dragMoved=true;jump(1);return;}if(!dragMoved&&Math.abs(e.clientY-pointerStartY)<8){pointerCoords(e);raycaster.setFromCamera(pointer,camera);const h=raycaster.intersectObjects(pickables)[0];if(h){const id=h.object.userData.exhibit;if(id!=='guide')window.showPortfolioProject(id,canvas);}}drag=false;});canvas.addEventListener('pointerleave',()=>{drag=false;hover=-1;});canvas.addEventListener('pointercancel',()=>drag=false);
 canvas.addEventListener('keydown',e=>{const map={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down'};if(map[e.key]){e.preventDefault();document.querySelector(`[data-look="${map[e.key]}"]`).click();}if(e.key==='Home'){e.preventDefault();document.querySelector('[data-look="reset"]').click();}if(e.key==='PageDown'){e.preventDefault();jump(Math.min(7,current+1));}if(e.key==='PageUp'){e.preventDefault();jump(Math.max(0,current-1));}});
 window.addEventListener('lab-motion',e=>{paused=e.detail;});reduced.addEventListener('change',()=>{paused=reduced.matches;document.body.classList.toggle('paused',paused);$('#motion').textContent=paused?'Resume motion':'Pause motion';});
 window.addEventListener('lab-recruiter',e=>{recruiter=e.detail;if(recruiter){document.body.classList.remove('room-journey-active');$('#museum').scrollIntoView({behavior:'instant'});}else{window.scrollTo({top:0,behavior:'instant'});resize();readProgress();}});
@@ -585,8 +593,7 @@ if (pedestal) {
 }
 $('#room-progress-fill').style.width=`${progress*100}%`;$('.room-progress').setAttribute('aria-valuenow',String(Math.round(progress*100)));
 renderer.render(scene,camera);
-frame.classList.replace('room-opening','room-ready');
 }
-resize();readProgress();setChapter(0);camera.position.copy(positions[0]);camera.lookAt(targets[0]);renderer.render(scene,camera);requestAnimationFrame(animate);
+resize();readProgress();setChapter(0);camera.position.copy(positions[0]);camera.lookAt(targets[0]);renderer.render(scene,camera);frame.classList.replace('room-opening','room-ready');requestAnimationFrame(animate);
 $('#render-status').textContent='EXHIBITION OPEN · TAKE YOUR TIME';document.body.classList.toggle('paused',paused);$('#motion').textContent=paused?'Resume motion':'Pause motion';
 }
